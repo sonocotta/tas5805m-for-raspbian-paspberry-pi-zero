@@ -74,3 +74,9 @@ speaker-test -t sine -f 500 -c 2
 ```
 
 And finally, I can hear a beeping sound in both speakers. Hooray!
+
+## References
+
+- [TAS5805M Datasheet](https://www.ti.com/lit/ds/symlink/tas5805m.pdf?ts=1711108445083) 
+- [TAS5805M: Linux driver for TAS58xx family](https://e2e.ti.com/support/audio-group/audio/f/audio-forum/1165952/tas5805m-linux-driver-for-tas58xx-family)
+- [Linux/TAS5825M: Linux drivers](https://e2e.ti.com/support/audio-group/audio/f/audio-forum/722027/linux-tas5825m-linux-drivers)
