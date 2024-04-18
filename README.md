@@ -20,7 +20,7 @@ $ git clone https://github.com/sonocotta/tas5805m-for-raspbian-paspberry-pi-zero
 We need to add user overlays to enable I2S  (disabled by default) and enable a sound card on that port
 
 ```
-$ sudo compile-overlay.sh
+$ sudo ./compile-overlay.sh
 ```
 
 this will compile the overlay file, put the compiled file under `/boot/overlays` 
