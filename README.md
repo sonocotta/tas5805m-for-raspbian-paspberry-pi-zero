@@ -43,7 +43,7 @@ You need to reboot for changes to take effect, but this will not work just yet. 
 
 ## Kernel module
 
-Now you are ready to build. The first command produces `ras5805m.ko` file among others. Second will copy it to the appropriate kernel modules folder.
+Now you are ready to build. The first command produces `tas5805m.ko` file among others. Second will copy it to the appropriate kernel modules folder.
 
 ```
 $ make all
@@ -53,6 +53,7 @@ $ sudo make install
 Now we are ready to reboot and check if we have a sound card listed
 
 ```
+$ aplay -l
 **** List of PLAYBACK Hardware Devices ****
 card 0: LouderRaspberry [Louder-Raspberry], device 0: bcm2835-i2s-tas5805m-amplifier tas5805m-amplifier-0 [bcm2835-i2s-tas5805m-amplifier tas5805m-amplifier-0]
   Subdevices: 1/1
