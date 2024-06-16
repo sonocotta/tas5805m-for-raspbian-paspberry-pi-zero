@@ -35,7 +35,7 @@
 #include <sound/initval.h>
 #include <sound/tlv.h>
 
-#define IS_KERNEL_MAJOR_BELOW_5 (LINUX_VERSION_CODE < KERNEL_VERSION(64, 0, 0))
+#define IS_KERNEL_MAJOR_BELOW_5 (LINUX_VERSION_CODE < KERNEL_VERSION(6, 0, 0))
 
 /* Datasheet-defined registers on page 0, book 0 */
 #define REG_PAGE        0x00
