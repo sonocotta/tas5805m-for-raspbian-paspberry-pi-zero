@@ -406,10 +406,6 @@ static int tas5805m_i2c_probe(struct i2c_client *i2c)
     memcpy(tas5805m->dsp_cfg_data, fw->data, fw->size);
     release_firmware(fw);
 
-    // Allocate and initialize my_device
-    tas5805m->my_wq = create_singlethread_workqueue("_wq");
-    INIT_WORK(&tas5805m->work, tas5805m_work_handler);
-
 err:
     printk(KERN_DEBUG "tas5805m_i2c_probe: Powering on the device\n");
 
@@ -444,6 +440,10 @@ err:
         regulator_disable(tas5805m->pvdd);
         return ret;
     }
+
+	printk(KERN_DEBUG "tas5805m_i2c_probe: Allocating work queue\n");
+    tas5805m->my_wq = create_singlethread_workqueue("_wq");
+    INIT_WORK(&tas5805m->work, tas5805m_work_handler);
 
     return 0;
 }
