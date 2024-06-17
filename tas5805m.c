@@ -36,7 +36,8 @@
 #include <sound/initval.h>
 #include <sound/tlv.h>
 
-#include "stereo_flow2_48kHz_default_coldboot_-10dB.h"
+//#include "stereo_flow_48kHz_default_coldboot_-10dB.h"
+#include "stereo_flow_48kHz_minimum.h"
 
 #define IS_KERNEL_MAJOR_BELOW_5 (LINUX_VERSION_CODE < KERNEL_VERSION(6, 0, 0))
 
@@ -61,7 +62,7 @@
 
 #define TAS5805M_RATES      (SNDRV_PCM_RATE_8000_96000)
 #define TAS5805M_FORMATS    (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
-                SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
+                		     SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
 
 /* DEVICE_CTRL_2 register values */
 #define DCTRL2_MODE_DEEP_SLEEP 0x00
@@ -84,10 +85,6 @@ static const uint8_t dsp_cfg_preboot[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x7f, 0x00, 0x03, 0x02,
 };
-
-// static const uint8_t dsp_cfg_firmware_missing[] = {
-//     0x00, 0x00, 0x7f, 0x00, 0x54, 0x03, 0x78, 0x80,   // minimal config for PVDD = 24V when firmware is missing
-// };
 
 struct tas5805m_priv {
     struct regulator        *pvdd;
@@ -187,7 +184,6 @@ static void tas5805m_work_handler(struct work_struct *work) {
         if (tas5805m->dsp_cfg_data) {
             send_cfg(rm, tas5805m->dsp_cfg_data, tas5805m->dsp_cfg_len);
         } else {
-            // send_cfg(rm, tas5805m_init_sequence, ARRAY_SIZE(tas5805m_init_sequence));
 			ret = regmap_register_patch(rm, tas5805m_init_sequence, ARRAY_SIZE(tas5805m_init_sequence));
 			if (ret != 0)
 			{
@@ -395,11 +391,11 @@ static int tas5805m_i2c_probe(struct i2c_client *i2c)
          config_name);
     ret = request_firmware(&fw, filename, dev);
     if (ret) {        
-        printk(KERN_ERR "firmware not found, using minimal config\n");
+        printk(KERN_WARNING "firmware not found, using default config\n");
         goto err;
     }
     if ((fw->size < 2) || (fw->size & 1)) {
-        printk(KERN_ERR "firmware is invalid, using minimal config\n");
+        printk(KERN_ERR "firmware is invalid, using default config\n");
         release_firmware(fw);
         goto err;
     }
@@ -407,7 +403,7 @@ static int tas5805m_i2c_probe(struct i2c_client *i2c)
     tas5805m->dsp_cfg_len = fw->size;
     tas5805m->dsp_cfg_data = devm_kmalloc(dev, fw->size, GFP_KERNEL);
     if (!tas5805m->dsp_cfg_data) {
-        printk(KERN_ERR "firmware is not loaded, using minimal config\n");
+        printk(KERN_ERR "firmware is not loaded, using default config\n");
         release_firmware(fw);
         goto err;
     }
