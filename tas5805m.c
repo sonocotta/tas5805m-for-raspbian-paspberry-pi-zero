@@ -36,6 +36,8 @@
 #include <sound/initval.h>
 #include <sound/tlv.h>
 
+#include "stereo_flow2_48kHz_default_coldboot_-10dB.h"
+
 #define IS_KERNEL_MAJOR_BELOW_5 (LINUX_VERSION_CODE < KERNEL_VERSION(6, 0, 0))
 
 /* Datasheet-defined registers on page 0, book 0 */
@@ -83,9 +85,9 @@ static const uint8_t dsp_cfg_preboot[] = {
     0x00, 0x00, 0x7f, 0x00, 0x03, 0x02,
 };
 
-static const uint8_t dsp_cfg_firmware_missing[] = {
-    0x00, 0x00, 0x7f, 0x00, 0x54, 0x03, 0x78, 0x80,   // minimal config for PVDD = 24V when firmware is missing
-};
+// static const uint8_t dsp_cfg_firmware_missing[] = {
+//     0x00, 0x00, 0x7f, 0x00, 0x54, 0x03, 0x78, 0x80,   // minimal config for PVDD = 24V when firmware is missing
+// };
 
 struct tas5805m_priv {
     struct regulator        *pvdd;
@@ -185,7 +187,13 @@ static void tas5805m_work_handler(struct work_struct *work) {
         if (tas5805m->dsp_cfg_data) {
             send_cfg(rm, tas5805m->dsp_cfg_data, tas5805m->dsp_cfg_len);
         } else {
-            send_cfg(rm, dsp_cfg_firmware_missing, ARRAY_SIZE(dsp_cfg_firmware_missing));
+            // send_cfg(rm, tas5805m_init_sequence, ARRAY_SIZE(tas5805m_init_sequence));
+			ret = regmap_register_patch(rm, tas5805m_init_sequence, ARRAY_SIZE(tas5805m_init_sequence));
+			if (ret != 0)
+			{
+				printk(KERN_ERR "tas5805m_work_handler: failed to initialize TAS5805M: %d\n",ret);
+				return;
+			}
         }
 
         tas5805m->is_powered = true;
