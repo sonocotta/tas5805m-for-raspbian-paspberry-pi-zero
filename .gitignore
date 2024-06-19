@@ -1,0 +1,8 @@
+.tas5805m*
+tas5805m.ko
+tas5805m.o
+tas5805m.mod*
+.Module.symvers.cmd
+.modules.order.cmd
+Module.symvers
+modules.order
