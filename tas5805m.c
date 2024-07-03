@@ -40,6 +40,7 @@
 #include "stereo_flow_48kHz_minimum.h"
 
 #define IS_KERNEL_MAJOR_BELOW_5 (LINUX_VERSION_CODE < KERNEL_VERSION(6, 0, 0))
+#define IS_KERNEL_BELOW_6_2 (LINUX_VERSION_CODE < KERNEL_VERSION(6, 2, 0))
 
 /* Datasheet-defined registers on page 0, book 0 */
 #define REG_PAGE        0x00
@@ -390,7 +391,7 @@ static int tas5805m_i2c_probe(struct i2c_client *i2c)
     snprintf(filename, sizeof(filename), "tas5805m_dsp_%s.bin",
          config_name);
     ret = request_firmware(&fw, filename, dev);
-    if (ret) {        
+    if (ret) {
         printk(KERN_WARNING "firmware not found, using default config\n");
         goto err;
     }
@@ -491,7 +492,7 @@ MODULE_DEVICE_TABLE(of, tas5805m_of_match);
 #endif
 
 static struct i2c_driver tas5805m_i2c_driver = {
-#if IS_KERNEL_MAJOR_BELOW_5
+#if IS_KERNEL_BELOW_6_2
     .probe_new  = tas5805m_i2c_probe,
 #else
     .probe      = tas5805m_i2c_probe,
